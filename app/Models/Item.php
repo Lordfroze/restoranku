@@ -20,4 +20,10 @@ class Item extends Model
     {
         return $this->belongsTo(Category::class); // setiap item hanya memiliki 1 category
     }
+
+    // relasi
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class); // setiap item bisa memiliki banyak order item
+    }
 }

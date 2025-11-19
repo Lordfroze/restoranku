@@ -14,4 +14,10 @@ class Order extends Model
     {
         return $this->belongsTo(User::class); // setiap order hanya memiliki 1 user
     }
+
+    // relasi
+    public function orderItems()
+    {
+        return $this->hasMany(OrderItem::class); // setiap order bisa memiliki banyak order item
+    }
 }
