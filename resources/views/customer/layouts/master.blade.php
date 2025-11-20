@@ -188,7 +188,7 @@
 
 
         <!-- Banner Section Start-->
-        <div class="container-fluid banner bg-secondary my-5">
+        <!-- <div class="container-fluid banner bg-secondary my-5">
             <div class="container py-5">
                 <div class="row g-4 align-items-center">
                     <div class="col-lg-6">
@@ -213,7 +213,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
         <!-- Banner Section End -->
 
 
