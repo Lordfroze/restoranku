@@ -13,7 +13,7 @@ class ItemFactory extends Factory
         return [
             // Membuat data item
             'name' => $this->faker->name(),
-            'category_id' => $this->faker->numberBetween([1, 2]),
+            'category_id' => $this->faker->numberBetween(1, 2),
             'price' => $this->faker->randomFloat(2, 1000, 100000),
             'description' => $this->faker->text(),
             'img' => $this->faker->imageUrl(),
