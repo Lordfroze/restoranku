@@ -17,10 +17,10 @@ class DatabaseSeeder extends Seeder
     {
         // memanggil seeder yang dibuat sebelumnya
         $this->call([
-            RoleSeeder::class,
-            CategorySeeder::class,
+            // RoleSeeder::class,
+            // CategorySeeder::class,
             ItemSeeder::class,
-            UserSeeder::class,
+            // UserSeeder::class,
         ]);
     }
 }
