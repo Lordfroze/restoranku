@@ -166,5 +166,29 @@
             });
         }
 
+         // fungsi menghapus keranjang
+        function removeItemFromCart(itemId) {
+            fetch("{{ route('cart.remove') }}", { // route untuk menghapus item dari keranjang
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ id: itemId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menghapus item dari keranjang');
+            });
+        }
+
     </script>
 @endsection

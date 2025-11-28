@@ -94,4 +94,20 @@ class MenuController extends Controller
 
         return response()->json(['success' => false]); // jika item tidak ada di keranjang, tampilkan pesan error
     }
+
+    // fungsi menghapus item dari keranjang
+    public function removeCart(Request $request) {
+        $itemId = $request->input('id');
+
+        $cart = Session::get('cart');
+
+        if (isset($cart[$itemId])) {
+            unset($cart[$itemId]);
+            Session::put('cart', $cart);
+
+            Session::flash('success', 'Item berhasil dihapus dari keranjang');
+
+            return response()->json(['success' => true]);
+        }
+    }
 }
