@@ -56,12 +56,15 @@
                         <td>
                             <div class="input-group quantity mt-4" style="width: 100px;">
                                 <div class="input-group-btn">
+                                    <!-- Tombol kurangi -->
                                     <button class="btn btn-sm btn-minus rounded-circle bg-light border" onclick="updateQuantity('{{ $item['id'] }}', -1)">
                                         <i class="fa fa-minus"></i>
                                     </button>
                                 </div>
+                                <!-- Inputan quantity -->
                                 <input id="qty-{{ $item['id'] }}" type="text" class="form-control form-control-sm text-center border-0 bg-transparent" value="{{ $item['qty'] }}" readonly>
                                 <div class="input-group-btn">
+
                                     <button class="btn btn-sm btn-plus rounded-circle bg-light border" onclick="updateQuantity('{{ $item['id'] }}', 1)">
                                         <i class="fa fa-plus"></i>
                                     </button>
@@ -72,6 +75,7 @@
                             <p class="mb-0 mt-4">{{ 'Rp'. number_format($item['price'] * $item['qty'], 0, ',','.') }}</p>
                         </td>
                         <td>
+                            <!-- Taombol hapus -->
                             <button class="btn btn-md rounded-circle bg-light border mt-4" onclick="if(confirm('Apakah anda yakin ingin menghapus item ini?')) { removeItemFromCart('{{ $item['id'] }}') }">
                                 <i class="fa fa-times text-danger"></i>
                             </button>
@@ -120,4 +124,47 @@
         @endif
     </div>
 </div>
+@endsection
+
+@section('script')
+    <script>
+        // script untuk update quantity
+        function updateQuantity(itemId, change) {
+            var qtyInput = document.getElementById('qty-' + itemId); // input qty
+            var currentQty = parseInt(qtyInput.value); // qty saat ini
+            var newQty = currentQty + change; // qty baru
+
+            // jika qty kurang dari 1, hapus item dari keranjang
+            if (newQty <= 0 ) {
+                if(confirm('Apakah anda yakin ingin menghapus item ini?')) {
+                    removeItemFromCart(itemId);
+                }
+                return;
+            }
+            // update qty di server
+            fetch("{{ route('cart.update') }}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ id: itemId, qty: newQty })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // jika update berhasil, update qty di input dan reload halaman
+                if (data.success) {
+                    qtyInput.value = newQty;
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat mengupdate keranjang');
+            });
+        }
+
+    </script>
 @endsection

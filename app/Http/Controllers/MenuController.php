@@ -71,4 +71,27 @@ class MenuController extends Controller
             200
         );
     }
+
+    // fungsi update keranjang
+    public function updateCart(Request $request)
+    {
+        $itemId = $request->input('id');
+        $newQty = $request->input('qty');
+
+        if ($newQty <= 0) {
+            return response()->json(['success' => false]); // jika quantity kurang dari 0, tampilkan pesan error
+        }
+
+        $cart = Session::get('cart');
+        // cek apakah item ada di keranjang
+        if (isset($cart[$itemId])) {
+            $cart[$itemId]['qty'] = $newQty; // jika ada, update quantity
+            Session::put('cart', $cart); // simpan keranjang ke session
+            Session::flash('success', 'Jumlah item berhasil diperbarui'); // tampilkan pesan sukses
+
+            return response()->json([ 'success' => true]);
+        }
+
+        return response()->json(['success' => false]); // jika item tidak ada di keranjang, tampilkan pesan error
+    }
 }
