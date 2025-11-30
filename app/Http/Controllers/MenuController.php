@@ -110,4 +110,10 @@ class MenuController extends Controller
             return response()->json(['success' => true]);
         }
     }
+
+    // fungsi mengosongkan keranjang
+    public function clearCart(){
+        Session::forget('cart');
+        return redirect()->route('cart')->with('success', 'Keranjang berhasil diosongkan');
+    }
 }

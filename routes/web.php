@@ -14,6 +14,7 @@ Route::get('/cart', [MenuController::class, 'cart'])->name('cart');
 Route::post('/cart/add', [MenuController::class, 'addToCart'])->name('cart.add');
 Route::post('/cart/update', [MenuController::class, 'updateCart'])->name('cart.update');
 Route::post('/cart/remove', [MenuController::class, 'removeCart'])->name('cart.remove');
+Route::get('/cart/clear', [MenuController::class, 'clearCart'])->name('cart.clear');
 
 
 

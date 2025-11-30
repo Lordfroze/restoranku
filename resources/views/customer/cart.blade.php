@@ -90,7 +90,8 @@
             $total = $subTotal + $tax;
         @endphp
         <div class="d-flex justify-content-end">
-            <a href="#" class="btn btn-danger" onclick=" return confirm('Apakah Anda yakin ingin mengosongkan keranjang?')">Kosongkan Keranjang</a>
+            <!-- tombol mengosongkan keranjang -->
+            <a href="{{ route('cart.clear') }}" class="btn btn-danger" onclick=" return confirm('Apakah Anda yakin ingin mengosongkan keranjang?')">Kosongkan Keranjang</a>
         </div>
         <div class="row g-4 justify-content-end mt-1">
             <div class="col-8"></div>
