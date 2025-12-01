@@ -33,6 +33,7 @@
                   </tr>
                 </thead>
                 <tbody>
+                    <!-- menampilkan menu pesanan yang didapat dari session cart -->
                     @php
                         $subTotal = 0;
                     @endphp
