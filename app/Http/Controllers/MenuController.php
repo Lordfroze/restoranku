@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\Item;
 use PHPUnit\Logging\OpenTestReporting\Status;
+use Illuminate\Support\Facades\Validator;
+use App\Models\User;
 
 class MenuController extends Controller
 {
@@ -48,9 +50,9 @@ class MenuController extends Controller
         $cart = Session::get('cart');
 
         // menambahkan menu ke keranjang
-        if(isset($cart[$menuId])){ // cek apakah menu sudah ada di keranjang
+        if (isset($cart[$menuId])) { // cek apakah menu sudah ada di keranjang
             $cart[$menuId]['qty']++; // jika sudah ada, tambahkan quantity
-        }else{ // jika belum ada, tambahkan menu ke keranjang
+        } else { // jika belum ada, tambahkan menu ke keranjang
             $cart[$menuId] = [
                 'id' => $menu->id,
                 'name' => $menu->name,
@@ -89,14 +91,15 @@ class MenuController extends Controller
             Session::put('cart', $cart); // simpan keranjang ke session
             Session::flash('success', 'Jumlah item berhasil diperbarui'); // tampilkan pesan sukses
 
-            return response()->json([ 'success' => true]);
+            return response()->json(['success' => true]);
         }
 
         return response()->json(['success' => false]); // jika item tidak ada di keranjang, tampilkan pesan error
     }
 
     // fungsi menghapus item dari keranjang
-    public function removeCart(Request $request) {
+    public function removeCart(Request $request)
+    {
         $itemId = $request->input('id');
 
         $cart = Session::get('cart');
@@ -112,7 +115,8 @@ class MenuController extends Controller
     }
 
     // fungsi mengosongkan keranjang
-    public function clearCart(){
+    public function clearCart()
+    {
         Session::forget('cart');
         return redirect()->route('cart')->with('success', 'Keranjang berhasil diosongkan');
     }
@@ -122,12 +126,67 @@ class MenuController extends Controller
     public function checkout()
     {
         $cart = Session::get('cart');
-        if(empty($cart)) {
+        if (empty($cart)) {
             return redirect()->route('cart')->with('error', 'Keranjang masih kosong');
         }
 
         $tableNumber = Session::get('tableNumber');
 
-        return view('customer.checkout', compact('cart','tableNumber'));
+        return view('customer.checkout', compact('cart', 'tableNumber'));
+    }
+
+    // fungsi menyimpan pesanan
+    public function storeOrder(Request $request)
+    {
+        $cart = Session::get('cart'); // mengecek apakah keranjang ada
+        $tableNumber = Session::get('tableNumber');
+        if (empty($cart)) { // jika keranjang kosong
+            return redirect()->route('cart')->with('error', 'Keranjang masih kosong'); //redirect ke keranjang
+        }
+
+        // validasi input
+        $validator = Validator::make($request->all(), [
+            'fullname' => 'required|string|max:255',
+            'phone' => 'required|string|max:15',
+        ]);
+
+        if ($validator->fails()) { // jika validasi gagal
+            return redirect()->back()->withErrors($validator)->withInput(); // redirect ke checkout dengan pesan error
+        }
+
+        $total = 0;
+        foreach ($cart as $item) { // perulangan dari setiap item di keranjang
+            $total += $item['price'] * $item['qty']; // hitung total harga
+        }
+
+        $totalAmount = 0;
+        foreach ($cart as $item) { // perulangan dari setiap item di keranjang
+            $totalAmount += $item['qty'] * $item['price']; // hitung total harga
+
+            // memasukkan detail item ke array
+            $itemDetails[] = [
+                'item_id' => $item['id'],
+                'price' => (int) $item['price'] + ($item['price'] * 0.1), // hitung total harga + 10% pph
+                'quantity' => $item['qty'],
+                'name' => substr($item['name'], 0, 50), // truncaate nama item ke 50 karakter
+            ];
+        }
+
+        // menyimpan ke database
+        $user = User::firstOrCreate([
+           'name' => $request->input('fullname'),
+           'phone' => $request->input('phone'),
+           'role_id' => 4, // role customer sesuai database
+        ]);
+
+        $order = new Order();
+        $order->name = $request->input('name');
+        $order->phone = $request->input('phone');
+        $order->tableNumber = $request->input('tableNumber');
+        $order->totalPrice = array_sum(array_column($cart, 'price') * array_column($cart, 'qty'));
+        $order->save();
+
+        Session::forget('cart');
+        return redirect()->route('cart')->with('success', 'Pesanan berhasil dipesan');
     }
 }
