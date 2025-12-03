@@ -12,19 +12,19 @@
                         <div class="col-md-12 col-lg-6">
                             <div class="form-item w-100">
                                 <label class="form-label my-3">Nama Lengkap<sup>*</sup></label>
-                                <input type="text" class="form-control" placeholder="masukkan nama" required>
+                                <input type="text" name="fullname" class="form-control" placeholder="masukkan nama" required>
                             </div>
                         </div>
                         <div class="col-md-12 col-lg-6">
                             <div class="form-item w-100">
                                 <label class="form-label my-3">Nomor WhatsApp<sup>*</sup></label>
-                                <input type="text" class="form-control" placeholder="masukkan nomor whatsapp" required>
+                                <input type="text" name="phone" class="form-control" placeholder="masukkan nomor whatsapp" required>
                             </div>
                         </div>
                         <div class="col-md-12 col-lg-6">
                             <div class="form-item w-100">
                                 <label class="form-label my-3">Nomor Meja<sup>*</sup></label>
-                                <input type="text" class="form-control" value="{{$tableNumber ?? 'Tidak ada nomor meja'}}" required>
+                                <input type="text" class="form-control" value="{{$tableNumber ?? 'Tidak ada nomor meja'}}" disabled required>
                             </div>
                         </div>
                     </div>
@@ -121,7 +121,7 @@
 
                             <div class="d-flex justify-content-end">
                                 <!-- button konfirmasi pesanan -->
-                                <button type="button" class="btn border-secondary py-3 text-uppercase text-primary">Konfirmasi Pesanan</button>
+                                <button type="submit" class="btn border-secondary py-3 text-uppercase text-primary">Konfirmasi Pesanan</button>
                             </div>
 
                         </div>

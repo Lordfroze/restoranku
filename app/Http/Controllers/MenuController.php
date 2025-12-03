@@ -8,6 +8,8 @@ use App\Models\Item;
 use PHPUnit\Logging\OpenTestReporting\Status;
 use Illuminate\Support\Facades\Validator;
 use App\Models\User;
+use App\Models\Order;
+use App\Models\OrderItem;
 
 class MenuController extends Controller
 {
@@ -172,21 +174,40 @@ class MenuController extends Controller
             ];
         }
 
-        // menyimpan ke database
+        // menyimpan user ke database
         $user = User::firstOrCreate([
-           'name' => $request->input('fullname'),
+           'fullname' => $request->input('fullname'),
            'phone' => $request->input('phone'),
            'role_id' => 4, // role customer sesuai database
         ]);
 
-        $order = new Order();
-        $order->name = $request->input('name');
-        $order->phone = $request->input('phone');
-        $order->tableNumber = $request->input('tableNumber');
-        $order->totalPrice = array_sum(array_column($cart, 'price') * array_column($cart, 'qty'));
-        $order->save();
+        // menyimpan order ke database
+        $order = Order::create([
+            'order_code' => 'ORD-'. $tableNumber . '-' . time(),
+            'user_id' => $user->id,
+            'subtotal' => $totalAmount,
+            'tax' => $totalAmount * 0.1, // 10% pph
+            'grand_total' => $totalAmount + ($totalAmount * 0.1), // total harga + 10% pph
+            'status' => 'pending',
+            'table_number' => $tableNumber,
+            'payment_method' => $request->payment_method,
+            'notes' => $request->notes,
+        ]);
 
+        // menyimpan order item ke database
+        foreach ($cart as $itemId => $item) { // perulangan dari setiap item di keranjang
+            OrderItem::create([
+                'order_id' => $order->id,
+                'item_id' => $item['id'],
+                'quantity' => $item['qty'],
+                'price' => $item['price'] * $item['qty'], // hitung total harga
+                'tax' => $item['price'] * $item['qty'] * 0.1, // 10% pph
+                'total_price' => ($item['price'] * $item['qty']) + (0.1 * $item['price'] * $item['qty']), // hitung total harga + 10% pph
+            ]);
+        }
+        // menghapus keranjang setelah order berhasil disimpan
         Session::forget('cart');
-        return redirect()->route('cart')->with('success', 'Pesanan berhasil dipesan');
+
+        return redirect()->route('menu')->with('success', 'Pesanan berhasil dibuat');
     }
 }
