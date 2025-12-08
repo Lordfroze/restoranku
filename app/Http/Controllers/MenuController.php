@@ -208,7 +208,8 @@ class MenuController extends Controller
         // menghapus keranjang setelah order berhasil disimpan
         Session::forget('cart');
 
-        return redirect()->route('menu')->with('success', 'Pesanan berhasil dibuat');
+        // redirect ke halaman pesanan berhasil dengan orderId
+        return redirect()->route('checkout.success', ['orderId' => $order->order_code])->with('success', 'Pesanan berhasil dibuat');
     }
 
     // fungsi menampilkan pesanan berhasil
@@ -227,7 +228,7 @@ class MenuController extends Controller
             $order->save();
         }
 
-        return view('customer.success', compact('order'));
+        return view('customer.success', compact('order', 'orderItems'));
     }
 
 }
