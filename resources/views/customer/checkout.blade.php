@@ -132,6 +132,7 @@
     </div>
 </div>
 
+<!-- script midtrans untuk menampilkan snap token -->
 <script  src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ env('MIDTRANS_CLIENT_KEY') }}"></script>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -149,9 +150,9 @@
             paymentMethod = paymentMethod.value;
             let formData = new FormData(form);
 
-            if(paymentMethod === "tunai") {
+            if(paymentMethod === "tunai") { // jika metode pembayaran tunai, submit form
                 form.submit();
-            } else {
+            } else { // jika metode pembayaran qris, kirim request ke server pada route checkout.store dengan metode POST
                 fetch("{{ route('checkout.store') }}", {
                     method: "POST",
                     body: formData,

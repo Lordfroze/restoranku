@@ -210,9 +210,12 @@ class MenuController extends Controller
         // menghapus keranjang setelah order berhasil disimpan
         Session::forget('cart');
 
+        // redirect ke halaman checkout success jika metode pembayaran tunai
         if($request->payment_method == 'tunai') {
             return redirect()->route('checkout.success', ['orderId' => $order->order_code])->with('success', 'Pesanan berhasil dibuat');
         } else {
+            //MIDTRANS
+            // membuat snap token untuk midtrans jika metode pembayaran qris
             \Midtrans\Config::$serverKey = config('midtrans.server_key');
             \Midtrans\Config::$isProduction = config('midtrans.is_production');
             \Midtrans\Config::$isSanitized = true;
