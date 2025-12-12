@@ -167,7 +167,8 @@ class MenuController extends Controller
 
             // memasukkan detail item ke array
             $itemDetails[] = [
-                'item_id' => $item['id'],
+                // 'item_id' => $item['id'],
+                'id' => $item['id'],
                 'price' => (int) ($item['price'] + ($item['price'] * 0.1)), // hitung total harga + 10% pph
                 'quantity' => $item['qty'],
                 'name' => substr($item['name'], 0, 50), // truncaate nama item ke 50 karakter
@@ -198,7 +199,8 @@ class MenuController extends Controller
         foreach ($cart as $itemId => $item) { // perulangan dari setiap item di keranjang
             OrderItem::create([
                 'order_id' => $order->id,
-                'item_id' => $item['id'],
+                // 'item_id' => $item['id'],
+                'item_id' => $itemId,
                 'quantity' => $item['qty'],
                 'price' => $item['price'] * $item['qty'], // hitung total harga
                 'tax' => $item['price'] * $item['qty'] * 0.1, // 10% pph
@@ -239,7 +241,8 @@ class MenuController extends Controller
             } catch (\Exception $e) {
                 return response()->json([
                     'status' => 'error',
-                    'message' => 'Gagal membuat pesanan. Silakan coba lagi.'
+                    'message' => 'Gagal membuat pesanan. Silakan coba lagi.',
+                    'error' => $e->getMessage(),
                 ]);
             }
         }

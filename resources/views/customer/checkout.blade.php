@@ -121,7 +121,7 @@
 
                             <div class="d-flex justify-content-end">
                                 <!-- button konfirmasi pesanan -->
-                                <button type="submit" class="btn border-secondary py-3 text-uppercase text-primary">Konfirmasi Pesanan</button>
+                                <button type="button" id="pay-button" class="btn border-secondary py-3 text-uppercase text-primary">Konfirmasi Pesanan</button>
                             </div>
 
                         </div>
@@ -174,7 +174,9 @@
                             }
                         });
                     } else {
+                        console.error("Error:", data);
                         alert("Terjadi kesalahan, silakan coba lagi.");
+
                     }
                 })
                 .catch(error => {
