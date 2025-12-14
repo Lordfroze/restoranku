@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
+@section('title', 'Daftar Menu')
 
-@section('title', 'Kategori')
 @section('css')
 <link rel="stylesheet" href="{{ asset('assets/admin/extensions/simple-datatables/style.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/admin/compiled/css/table-datatable.css') }}">
@@ -11,13 +11,13 @@
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>Manajemen Kategori</h3>
-                <p class="text-subtitle text-muted">Informasi Kategori yang Terdaftar</p>
+                <h3>Daftar Menu</h3>
+                <p class="text-subtitle text-muted">Berbagai pilihan menu terbaik</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
-                <a href="{{ route('categories.create') }}" class="btn btn-primary float-start float-lg-end">
+                <a href="{{ route('items.create') }}" class="btn btn-primary float-start float-lg-end">
                     <i class="bi bi-plus"></i>
-                    Tambah Kategori
+                    Tambah Menu
                 </a>
             </div>
         </div>
@@ -35,22 +35,41 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Kategori</th>
+                            <th>Gambar</th>
+                            <th>Nama Item</th>
                             <th>Deskripsi</th>
-                            <th>Aksi</th>
+                            <th>Harga</th>
+                            <th>Kategori</th>
+                            <th>Status</th>
+                            <th colspan="2">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($categories as $category)
+                        @foreach ($items as $item)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $category->cat_name }}</td>
-                            <td>{{ Str::limit($category->description, 30) }}</td>
                             <td>
-                                <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-warning btn-sm">
+                                <img src="{{ asset('img_item_upload/'. $item->img) }}" width="60" class="img-fluid rounded-top" alt="" onerror="this.onerror=null;this.src='{{  $item->img }}';">
+                            </td>
+                            <td>{{ $item->name }}</td>
+                            <td>{{ Str::limit($item->description,15) }}</td>
+                            <td>{{ 'Rp'. number_format($item->price, 0, ',','.') }}</td>
+                            <td>
+                                <span class="badge {{ $item->category->cat_name == 'Makanan' ? 'bg-warning' : 'bg-info' }}">
+                                    {{ $item->category->cat_name }}
+                                </span>
+                            </td>
+                            <td>
+                                <span class="badge {{ $item->is_active == 1 ? 'bg-success' : 'bg-danger' }}">
+                                    {{ $item->is_active == 1 ? 'Aktif' : 'Tidak Aktif' }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{{ route('items.edit', $item->id) }}" class="btn btn-warning btn-sm">
                                     <i class="bi bi-pencil"></i> Ubah
                                 </a>
-                                <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline">
+
+                                <form action="{{ route('items.destroy', $item->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah anda yakin ingin menghapus menu ini?')">
@@ -59,6 +78,7 @@
                                 </form>
                             </td>
                         </tr>
+
                         @endforeach
                     </tbody>
                 </table>

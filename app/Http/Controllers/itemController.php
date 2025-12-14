@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Item;
+use App\Models\Category;
+
+
 
 class itemController extends Controller
 {
@@ -11,7 +15,9 @@ class itemController extends Controller
      */
     public function index()
     {
-        //
+        //tampilkan item dari database
+        $items = Item::orderBy('name', 'asc')->get();
+        return view('admin.item.index', compact('items'));
     }
 
     /**
@@ -19,7 +25,10 @@ class itemController extends Controller
      */
     public function create()
     {
-        //
+        //menampilkan  item dengan data category
+        $categories = Category::orderBy('cat_name', 'asc')->get();
+        //menampilkan form create item   
+        return view('admin.item.create', compact('categories'));
     }
 
     /**
