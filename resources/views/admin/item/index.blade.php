@@ -25,6 +25,7 @@
     <section class="section">
         <div class="card">
             <div class="card-body">
+                <!-- notifikasi success -->
                 @if (session('success'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         <p><i class="bi bi-check-circle-fill"></i> {{ session('success') }}</p>
