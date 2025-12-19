@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Role;
 
 class RoleController extends Controller
 {
@@ -11,7 +12,9 @@ class RoleController extends Controller
      */
     public function index()
     {
-        //
+        // menampilkan role dari database
+        $roles = Role::all();
+        return view('admin.role.index', compact('roles'));
     }
 
     /**
@@ -19,7 +22,8 @@ class RoleController extends Controller
      */
     public function create()
     {
-        //
+        // menampilkan halaman create role
+        return view('admin.role.create');
     }
 
     /**
@@ -27,7 +31,14 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // menyimpan role ke database
+        $request->validate([
+            'role_name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+        ]);
+
+        Role::create($request->all());
+        return redirect()->route('roles.index')->with('success', 'Role created successfully');
     }
 
     /**
@@ -43,7 +54,10 @@ class RoleController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        // mengambil role berdasarkan id
+        $role = Role::findOrFail($id);
+        // menampilkan halaman edit role
+        return view('admin.role.edit', compact('role'));
     }
 
     /**
@@ -51,7 +65,17 @@ class RoleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        // memvalidasi request
+        $request->validate([
+            'role_name' => 'required|string|max:255',
+            'description' => 'required|string|max:255',
+        ]);
+        // mengambil role berdasarkan id
+        $role = Role::findOrFail($id);
+        // mengupdate role ke database
+        $role->update($request->all());
+        // mengembalikan ke halaman index role dengan pesan sukses
+        return redirect()->route('roles.index')->with('success', 'Role updated successfully');
     }
 
     /**
@@ -59,6 +83,11 @@ class RoleController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        // mengambil role berdasarkan id
+        $role = Role::findOrFail($id);
+        // menghapus role dari database
+        $role->delete();
+        // mengembalikan ke halaman index role dengan pesan sukses
+        return redirect()->route('roles.index')->with('success', 'Role deleted successfully');
     }
 }
