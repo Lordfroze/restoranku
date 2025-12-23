@@ -1,6 +1,5 @@
 @extends('admin.layouts.master')
-
-@section('title', 'Kategori')
+@section('title', 'Karyawan')
 @section('css')
 <link rel="stylesheet" href="{{ asset('assets/admin/extensions/simple-datatables/style.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/admin/compiled/css/table-datatable.css') }}">
@@ -11,13 +10,13 @@
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>Manajemen Kategori</h3>
-                <p class="text-subtitle text-muted">Informasi Kategori yang Terdaftar</p>
+                <h3>Manajemen Karyawan</h3>
+                <p class="text-subtitle text-muted">Informasi Karyawan yang Terdaftar</p>
             </div>
             <div class="col-12 col-md-6 order-md-2 order-first">
-                <a href="{{ route('categories.create') }}" class="btn btn-primary float-start float-lg-end">
+                <a href="{{ route('users.create') }}" class="btn btn-primary float-start float-lg-end">
                     <i class="bi bi-plus"></i>
-                    Tambah Kategori
+                    Tambah Karyawan
                 </a>
             </div>
         </div>
@@ -35,22 +34,28 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Kategori</th>
-                            <th>Deskripsi</th>
+                            <th>Username</th>
+                            <th>Nama Lengkap</th>
+                            <th>Email</th>
+                            <th>No. Telp</th>
+                            <th>Role</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($categories as $category)
+                        @foreach ($users as $user)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $category->cat_name }}</td>
-                            <td>{{ Str::limit($category->description, 30) }}</td>
+                            <td>{{ $user->username }}</td>
+                            <td>{{ $user->fullname }}</td>
+                            <td>{{ $user->email }}</td>
+                            <td>{{ $user->phone }}</td>
+                            <td>{{ $user->role->role_name }}</td>
                             <td>
-                                <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-warning btn-sm">
+                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">
                                     <i class="bi bi-pencil"></i> Ubah
                                 </a>
-                                <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline">
+                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah anda yakin ingin menghapus menu ini?')">
@@ -64,7 +69,6 @@
                 </table>
             </div>
         </div>
-
     </section>
 </div>
 @endsection
