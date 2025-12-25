@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
+@section('title', 'Daftar Pesanan')
 
-@section('title', 'Kategori')
 @section('css')
 <link rel="stylesheet" href="{{ asset('assets/admin/extensions/simple-datatables/style.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/admin/compiled/css/table-datatable.css') }}">
@@ -11,15 +11,15 @@
     <div class="page-title">
         <div class="row">
             <div class="col-12 col-md-6 order-md-1 order-last">
-                <h3>Manajemen Kategori</h3>
-                <p class="text-subtitle text-muted">Informasi Kategori yang Terdaftar</p>
+                <h3>Daftar Pesanan</h3>
+                <p class="text-subtitle text-muted">Informasi Pesanan yang Masuk</p>
             </div>
-            <div class="col-12 col-md-6 order-md-2 order-first">
-                <a href="{{ route('categories.create') }}" class="btn btn-primary float-start float-lg-end">
+            {{-- <div class="col-12 col-md-6 order-md-2 order-first">
+                <a href="{{ route('items.create') }}" class="btn btn-primary float-start float-lg-end">
                     <i class="bi bi-plus"></i>
-                    Tambah Kategori
+                    Tambah Menu
                 </a>
-            </div>
+            </div> --}}
         </div>
     </div>
     <section class="section">
@@ -35,30 +35,43 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Kategori</th>
-                            <th>Deskripsi</th>
-                            <th>Aksi</th>
+                            <th>Kode Pesanan</th>
+                            <th>Nama Pelanggan</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>No. Meja</th>
+                            <th>Metode Pembayaran</th>
+                            <th>Catatan</th>
+                            <th>Dibuat Pada</th>
+                            <th colspan="2">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($categories as $category)
+                        @foreach ($orders as $order)
                         <tr>
+
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $category->cat_name }}</td>
-                            <td>{{ Str::limit($category->description, 30) }}</td>
+                            <td>{{ $order->order_code }}</td>
+                            <td>{{ $order->user->fullname }}</td>
+                            <td>{{ 'Rp'. number_format($order->grand_total, 0, ',', '.') }}</td>
                             <td>
-                                <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-warning btn-sm">
-                                    <i class="bi bi-pencil"></i> Ubah
-                                </a>
-                                <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="d-inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah anda yakin ingin menghapus menu ini?')">
-                                        <i class="bi bi-trash"></i> Hapus
-                                    </button>
-                                </form>
+                                <span class="badge {{ $order->status == 'settlement' ? 'bg-success' : ($order->status == 'pending' ? 'bg-warning' : ($order->status == 'cooked' ? 'bg-primary' : 'bg-danger')) }}">
+                                    {{ $order->status }}
+                                </span>
+                            </td>
+                            <td>{{ $order->table_number }}</td>
+                            <td>{{ $order->payment_method }}</td>
+                            <td>{{ $order->note ?? '-' }}</td>
+                            <td>{{ $order->created_at->format('d-m-Y H:i') }}</td>
+                            <td>
+                                <span class="btn btn-primary btn-sm">
+                                    <a href="{{ route('orders.show', $order->id) }}" class="text-white">
+                                        <i class="bi bi-eye"></i> Lihat
+                                    </a>
+                                </span>
                             </td>
                         </tr>
+
                         @endforeach
                     </tbody>
                 </table>

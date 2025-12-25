@@ -10,8 +10,10 @@ class OrderController extends Controller
     //menampilkan order
     public function index()
     {
-        //menampilkan order
-        $orders = Order::all();
+        // Fetch all orders from the database
+        $orders = Order::all()->sortByDesc('created_at');
+
+        // Return the view with the orders
         return view('admin.order.index', compact('orders'));
     }
 }
