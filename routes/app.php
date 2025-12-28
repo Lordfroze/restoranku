@@ -43,6 +43,11 @@ Route::middleware('role:admin')->group(function (){
     Route::resource('users', UserController::class);
 });
 
+// settlement routes
+Route::middleware('role:admin|cashier|chef')->group(function (){
+    Route::post('/orders/{order}', [OrderController::class, 'settlement'])->name('orders.settlement');
+});
+
 // admin cashier and chef routes
 Route::middleware('role:admin|cashier|chef')->group(function (){
     Route::get('/dashboard', function () {
