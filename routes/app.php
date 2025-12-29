@@ -55,4 +55,5 @@ Route::middleware('role:admin|cashier|chef')->group(function (){
     })->name('dashboard');
     Route::post('items/update-status/{order}', [ItemController::class, 'updateStatus'])->name('items.updateStatus');
     Route::resource('items', ItemController::class);
+    Route::post('/orders/{order}', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
 });

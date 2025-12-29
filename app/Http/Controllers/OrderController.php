@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Illuminate\Support\Facades\Auth;
+
 
 class OrderController extends Controller
 {
@@ -36,5 +38,22 @@ class OrderController extends Controller
         $order->save();
         // Redirect back to the order index with a success message
         return redirect()->route('orders.index')->with('success', 'Order status updated to settlement successfully.');
+    }
+
+    public function updateStatus($id)
+    {
+        // Fetch the order by ID
+        $order = Order::findOrFail($id);
+
+        // Update the order status to 'settled'
+        if(Auth::user()->role->role_name == 'admin' || Auth::user()->role->role_name == 'cashier') {
+            $order->status = 'settlement';
+        } else {
+            $order->status = 'cooked';
+        }
+        $order->save();
+
+        // Redirect back to the orders index with a success message
+        return redirect()->route('orders.index')->with('success', 'Order settled successfully.');
     }
 };
