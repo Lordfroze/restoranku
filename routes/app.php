@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -50,9 +51,7 @@ Route::middleware('role:admin|cashier|chef')->group(function (){
 
 // admin cashier and chef routes
 Route::middleware('role:admin|cashier|chef')->group(function (){
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('items/update-status/{order}', [ItemController::class, 'updateStatus'])->name('items.updateStatus');
     Route::resource('items', ItemController::class);
     Route::post('/orders/{order}', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
